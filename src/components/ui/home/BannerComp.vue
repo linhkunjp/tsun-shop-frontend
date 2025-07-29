@@ -7,7 +7,7 @@
       transition: 'top 3s ease, margin 3s ease',
       boxShadow: '0 0 0 20px #fff',
     }"
-    class="text-black bg-white relative flex justify-center select-none"
+    class="relative flex justify-center text-black bg-white select-none"
   >
     <div class="!mx-[-15px]">
       <div
@@ -15,11 +15,7 @@
         :key="index"
         class="float-left w-[calc(100%/3)] px-[15px] banner"
       >
-        <RouterLink
-          :to="`/collections/${item.slug}`"
-          target="_blank"
-          class="overflow-hidden block relative"
-        >
+        <RouterLink :to="`/collections/${item.slug}`" class="relative block overflow-hidden">
           <img :src="item.image" />
         </RouterLink>
       </div>

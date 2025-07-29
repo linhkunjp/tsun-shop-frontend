@@ -1,16 +1,12 @@
 <template>
   <div class="!mb-16 select-none">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div v-for="(item, index) in data" :key="index" class="infor">
-        <RouterLink
-          :to="`/collections/${item.slug}`"
-          class="overflow-hidden block relative infor"
-          target="_blank"
-        >
+        <RouterLink :to="`/collections/${item.slug}`" class="relative block overflow-hidden infor">
           <img :src="item.image" />
           <div class="absolute bottom-5 left-5 px-4 py-3 bg-white !font-bold">
             <span class="block text-[#666666] text-base">{{ item.category }}</span>
-            <p class="text-black text-sm">{{ item.count }} sản phẩm</p>
+            <p class="text-sm text-black">{{ item.count }} sản phẩm</p>
           </div>
         </RouterLink>
       </div>

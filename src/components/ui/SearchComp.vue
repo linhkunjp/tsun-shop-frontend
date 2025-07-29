@@ -23,11 +23,11 @@
       class="absolute left-0 right-0 top-[37px] bg-white rounded-sm shadow-md z-10"
     >
       <template v-if="results.length > 0">
-        <a
+        <RouterLink
+          :to="`/products/${item.slug}`"
           v-for="(item, index) in results.slice(0, 5)"
           :key="index"
           class="flex items-start p-2.5 border-b border-[#dfe0e1] cursor-pointer select-none hover:opacity-[.7]"
-          target="_blank"
         >
           <div class="text-xs text-black !mr-2 flex-1">
             <span class="font-medium !mb-2 title">{{ item.title }}</span>
@@ -41,7 +41,7 @@
             </div>
           </div>
           <img :src="item.images[0]" class="w-[40px]" />
-        </a>
+        </RouterLink>
 
         <!-- See more -->
         <RouterLink
