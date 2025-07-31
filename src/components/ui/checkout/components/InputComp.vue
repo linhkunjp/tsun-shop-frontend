@@ -1,23 +1,42 @@
 <template>
   <div class="relative text-[#737373]">
-    <label :class="{ '!opacity-100': inputValue !== '' }">{{ placeholder }}</label>
-    <input
-      :value="inputValue"
-      @input="updateValue($event)"
-      :placeholder="placeholder"
-      :class="{ '!pt-[1.5em] !pb-[0.38em]': inputValue !== '' }"
-    />
+    <label :class="{ '!opacity-100': modelValue !== '' }">{{ placeholder }}</label>
+
+    <Field
+      v-slot="{ field, errorMessage }"
+      @update:modelValue="updateValue"
+      :name="name"
+      :value="modelValue"
+      :validateOnChange="true"
+      :validateOnBlur="false"
+    >
+      <input
+        :placeholder="placeholder"
+        v-bind="field"
+        :class="{ '!pt-[1.5em] !pb-[0.38em]': modelValue !== '' }"
+      />
+
+      <span v-if="errorMessage" class="text-sm text-[red] opacity-80 block !mt-2">{{
+        errorMessage
+      }}</span>
+    </Field>
   </div>
 </template>
 <script lang="ts">
 import { ref, watch } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
+import { Field } from 'vee-validate'
 
 export default {
   name: 'InputComp',
   mixins: [deviceMixin],
+  components: {
+    Field,
+  },
+
   props: {
     placeholder: String,
+    name: { type: String, required: true },
     modelValue: {
       type: String,
       default: '',
@@ -26,24 +45,13 @@ export default {
 
   setup(props, { emit }) {
     const isMobile = ref(false)
-    const inputValue = ref(props.modelValue)
 
-    watch(
-      () => props.modelValue,
-      (newVal) => {
-        inputValue.value = newVal
-      },
-    )
-
-    function updateValue(event: Event) {
-      const target = event.target as HTMLInputElement
-      inputValue.value = target.value
-      emit('update:modelValue', inputValue.value)
+    const updateValue = (value: any) => {
+      emit('update:modelValue', value)
     }
 
     return {
       isMobile,
-      inputValue,
       updateValue,
     }
   },

@@ -74,6 +74,22 @@ class CartService {
     }
   }
 
+  // Xóa toàn bộ giỏ hàng
+  static async clearCart(userId: string) {
+
+    try {
+      const url = `cart/${userId}`;
+      const response = await tsunV1.delete(url)
+      if (response.data && response.data.isSuccess == true) {
+        return response.data;
+      } else {
+        return response.data
+      }
+    } catch (error: any) {
+      return { isSuccess: false, message: error.message };
+    }
+  }
+
 
 }
 

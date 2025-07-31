@@ -20,7 +20,7 @@ export const useCartStore = defineStore(
                 const response = await CartService.getCartItem(this.userId)
 
                 if (!response || response.isSuccess === false) {
-                    console.error(response.message || 'Lỗi không xác định');
+                    // console.error(response.message || 'Lỗi không xác định');
                     this.isLoading = false
                     return null;
                 }
@@ -60,6 +60,21 @@ export const useCartStore = defineStore(
 
                 this.cartQuantity = this.dataCart.reduce((total, item) => total + item.quantity, 0);
                 this.recalcTotal()
+            },
+
+            // Xóa toàn bộ sản phẩm trong giỏ hàng
+            async clearCart() {
+                const response = await CartService.clearCart(this.userId)
+                if (!response || response.isSuccess === false) {
+                    // console.error(response.message || 'Lỗi không xác định');
+                    return null;
+                }
+
+                this.dataCart = []
+                this.cartQuantity = 0
+                this.totalAmount = ''
+                await this.getCart()
+
             },
 
             // Tổng tiền

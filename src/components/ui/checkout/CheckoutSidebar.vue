@@ -37,7 +37,12 @@
 
     <!-- Discount code -->
     <div class="flex items-center gap-3 !mt-5 !pb-4 border-b border-[#e1e1e1]">
-      <InputComp v-model="discountCode" :placeholder="'Mã giảm giá'" class="flex-1 w-full" />
+      <InputComp
+        v-model="discountCode"
+        :placeholder="'Mã giảm giá'"
+        name=""
+        class="flex-1 w-full"
+      />
       <button
         :class="{ 'pointer-events-none !bg-[#ccc]': discountCode == '' }"
         class="text-white !text-sm bg-[#338dbc] rounded !py-[0.88em] !px-[1.7em] cursor-pointer hover:brightness-[1.2]"
@@ -77,7 +82,7 @@
 import { ref, watch, computed } from 'vue'
 
 import deviceMixin from '@/utils/deviceMixin'
-import InputComp from '@/components/ui/InputComp.vue'
+import InputComp from './components/InputComp.vue'
 import { recalcTotal } from '@/utils/methods'
 
 import { useCartStore } from '@/stores/cart'

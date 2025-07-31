@@ -16,88 +16,77 @@
         Bạn đã có tài khoản? <a class="text-[#338dbc]">Đăng nhập</a>
       </p>
 
-      <!-- Form -->
-      <div class="!mt-3">
-        <InputComp v-model="authStore.username" :placeholder="'Họ và tên'" />
-        <div class="flex !my-3">
-          <InputComp v-model="authStore.email" :placeholder="'Email'" class="flex-1 !mr-3" />
-          <InputComp :placeholder="'Số điện thoại'" />
-        </div>
-        <InputComp :placeholder="'Địa chỉ'" />
-      </div>
-
-      <div class="flex gap-3 !mt-3">
-        <SelectComp
-          v-model="provinceCode"
-          :options="dataProvinces"
-          :label="'Chọn tỉnh / thành'"
-          :placeholder="'Tỉnh / thành'"
-          class="w-full"
-        />
-        <SelectComp
-          v-model="districtCode"
-          :options="dataDistricts"
-          :label="'Chọn quận / huyện'"
-          :placeholder="'Quận / huyện'"
-          class="w-full"
-        />
-        <SelectComp
-          v-model="wardCode"
-          :options="dataWards"
-          :label="'Chọn phường / xã'"
-          :placeholder="'Phường / xã'"
-          class="w-full"
-        />
-      </div>
-
-      <div class="!mt-6">
-        <h2 class="text-[#333333] text-[18px] font-medium">Phương thức vận chuyển</h2>
-        <div
-          class="border border-[#d9d9d9] rounded !px-[1.5em] !py-[3em] flex flex-col items-center !mt-3"
-        >
-          <img src="@/assets/img/icon-box.svg" />
-          <p class="text-[#737373] text-sm font-medium !mt-4">
-            Vui lòng chọn quận / huyện để có danh sách phương thức vận chuyển.
-          </p>
-        </div>
-      </div>
-
-      <div class="!mt-6">
-        <h2 class="text-[#333333] text-[18px] font-medium">Phương thức Thanh toán</h2>
-        <div class="border border-[#d9d9d9] rounded flex flex-col items-center !mt-3">
-          <div class="w-full border-b border-[#d9d9d9]">
-            <label class="w-full flex items-center gap-4 !p-[1.3em] cursor-pointer" for="payment">
-              <input id="payment" type="radio" checked />
-              <p class="text-[#737373] text-sm font-medium">Thanh toán khi giao hàng (COD)</p>
-            </label>
+      <Form @submit="orderComplete" :validation-schema="OrderSchema">
+        <!-- Form -->
+        <div class="!mt-3">
+          <InputComp v-model="authStore.username" :placeholder="'Họ và tên'" name="fullName" />
+          <div class="flex !my-3">
+            <InputComp
+              v-model="authStore.email"
+              :placeholder="'Email'"
+              name="email"
+              class="flex-1 !mr-3"
+            />
+            <InputComp v-model="phoneNumber" :placeholder="'Số điện thoại'" name="phoneNumber" />
           </div>
-          <div class="w-full text-center !px-[1.3em] !py-[2em] bg-[#fafafa]">
-            <p class="text-[#737373] text-sm font-medium">
-              Khi Shipper đến nhận hàng , vui lòng trả tiền trực tiếp cho Shipper !
-            </p>
-          </div>
+          <InputComp v-model="address" :placeholder="'Địa chỉ'" name="address" />
         </div>
-      </div>
 
-      <!-- Action -->
-      <div
-        :class="{ 'flex-col-reverse': isMobile }"
-        class="!mt-6 text-sm flex items-center justify-between"
-      >
-        <div
-          @click="goToCart"
-          :class="{ '!mt-4': isMobile }"
-          class="text-[#338dbc] font-medium cursor-pointer"
-        >
-          Giỏ hàng
+        <div class="flex gap-3 !mt-3">
+          <SelectComp
+            v-model="provinceCode"
+            :options="dataProvinces"
+            :label="'Chọn tỉnh / thành'"
+            :placeholder="'Tỉnh / thành'"
+            name="province"
+            class="w-full"
+          />
+          <SelectComp
+            v-model="districtCode"
+            :options="dataDistricts"
+            :label="'Chọn quận / huyện'"
+            :placeholder="'Quận / huyện'"
+            name="district"
+            class="w-full"
+          />
+          <SelectComp
+            v-model="wardCode"
+            :options="dataWards"
+            :label="'Chọn phường / xã'"
+            :placeholder="'Phường / xã'"
+            name="ward"
+            class="w-full"
+          />
         </div>
-        <button
-          :class="{ 'w-full': isMobile }"
-          class="text-white bg-[#338dbc] rounded !py-[1.4em] !px-[1.7em] cursor-pointer hover:brightness-[1.2]"
+
+        <MethodLayout />
+
+        <!-- Action -->
+        <div
+          :class="{ 'flex-col-reverse': isMobile }"
+          class="!mt-6 text-sm flex items-center justify-between"
         >
-          Hoàn tất đơn hàng
-        </button>
-      </div>
+          <div
+            @click="goToCart"
+            :class="{
+              '!mt-4': isMobile,
+              'pointer-events-none !border-[#ccc]': isDisabled,
+            }"
+            class="text-[#338dbc] font-medium cursor-pointer"
+          >
+            Giỏ hàng
+          </div>
+          <button
+            :class="{
+              'w-full': isMobile,
+              'pointer-events-none !bg-[#ccc] !border-[#ccc]': isDisabled,
+            }"
+            class="text-white bg-[#338dbc] rounded !py-[1.4em] !px-[1.7em] cursor-pointer hover:brightness-[1.2]"
+          >
+            Hoàn tất đơn hàng
+          </button>
+        </div>
+      </Form>
     </div>
   </div>
 </template>
@@ -105,40 +94,105 @@
 <script lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
-import InputComp from '@/components/ui/InputComp.vue'
-import SelectComp from '@/components/ui/SelectComp.vue'
+import InputComp from './components/InputComp.vue'
+import SelectComp from './components/SelectComp.vue'
+import MethodLayout from '@/components/ui/checkout/components/MethodLayout.vue'
 
+import { Form } from 'vee-validate'
+import { OrderSchema } from '@/schemas/OrderSchema'
+import { getNameByCode } from '@/utils/methods'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useAuthStore } from '@/stores/auth'
+import { useCartStore } from '@/stores/cart'
 import { useRouter } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
 
 import AddressService from '@/services/AddressService'
+import OrderService from '@/services/OrderService'
+
+interface AddressOption {
+  name: string
+  code: number
+}
 
 export default {
   name: 'CheckoutMain',
   mixins: [deviceMixin],
   components: {
     InputComp,
+    MethodLayout,
     SelectComp,
+    Form,
   },
 
   setup() {
     const isMobile = ref(false)
     const isDesktop = ref(false)
     const sidebarStore = useSidebarStore()
+    const cartStore = useCartStore()
     const authStore = useAuthStore()
     const router = useRouter()
+    const toast = useToast()
+    const isDisabled = ref(false)
 
     const dataProvinces = ref([])
     const dataDistricts = ref([])
-    const dataWards = ref([])
+    const dataWards = ref<AddressOption[]>([])
+
     const provinceCode = ref(null)
     const districtCode = ref(null)
     const wardCode = ref(null)
 
+    const phoneNumber = ref('')
+    const address = ref('')
+
     function goToCart() {
+      if (isDisabled.value) return
       sidebarStore.isOpen = false
       router.push('/cart')
+    }
+
+    async function orderComplete() {
+      if (isDisabled.value) return
+      const formData = {
+        userId: cartStore.userId,
+        items: cartStore.dataCart.map(({ _id, ...item }) => item),
+        totalAmount: cartStore.totalAmount,
+        phoneNumber: phoneNumber.value,
+        email: authStore.email,
+        fullName: authStore.username,
+        address: address.value,
+        province: getNameByCode(dataProvinces.value, provinceCode.value || 1),
+        district: getNameByCode(dataDistricts.value, districtCode.value || 1),
+        ward: getNameByCode(dataWards.value, wardCode.value || 1),
+      }
+      // console.log(formData)
+      authStore.isLoading = true
+      const result = await OrderService.createOrder(formData)
+
+      if (result.isSuccess == false) {
+        authStore.isLoading = false
+        toast.add({
+          severity: 'error',
+          summary: result.message,
+          group: 'tl',
+          life: 3000,
+        })
+      } else {
+        isDisabled.value = true
+        authStore.isLoading = false
+        toast.add({
+          severity: 'success',
+          summary: result.message,
+          group: 'tl',
+          life: 5000,
+        })
+
+        setTimeout(async () => {
+          await cartStore.clearCart()
+          router.push('/')
+        }, 4000)
+      }
     }
 
     async function getProvinces() {
@@ -157,19 +211,21 @@ export default {
     }
 
     watch(provinceCode, async (val) => {
-      provinceCode.value = val
       districtCode.value = null
       wardCode.value = null
-      dataWards.value = []
+
+      // dataWards.value = []
+      dataWards.value = [{ name: 'Phường/ xã', code: 1 }]
+
       if (val !== null) {
         await getDistricts(val)
       }
     })
 
     watch(districtCode, async (val) => {
-      districtCode.value = val
       wardCode.value = null
-      dataWards.value = []
+      // dataWards.value = []
+
       if (val !== null) {
         await getWards(val)
       }
@@ -182,7 +238,6 @@ export default {
     return {
       isMobile,
       isDesktop,
-      goToCart,
       authStore,
       dataProvinces,
       dataDistricts,
@@ -190,6 +245,12 @@ export default {
       provinceCode,
       districtCode,
       wardCode,
+      phoneNumber,
+      address,
+      isDisabled,
+      goToCart,
+      orderComplete,
+      OrderSchema,
     }
   },
 }

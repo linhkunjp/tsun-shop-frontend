@@ -1,3 +1,7 @@
+interface AddressArray {
+    name: String,
+    code: Number
+}
 
 // Tổng tiền
 export function recalcTotal(price: string, quantity: number) {
@@ -22,4 +26,11 @@ export function createGuestId(): string {
     }
 
     return id;
+}
+
+// Lấy ra tên dựa theo code
+export function getNameByCode(array: AddressArray[], code: Number) {
+    const result = array.find((value) => value.code == code)
+    if (!result) return ''
+    return result.name
 }

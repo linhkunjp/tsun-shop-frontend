@@ -37,6 +37,10 @@
       <CheckoutMain :class="{ 'w-[52%]': isDesktop }" />
     </div>
   </div>
+  <div>
+    <Toast position="top-center" group="tl" />
+  </div>
+  <LoadingComp v-if="authStore.isLoading" :bgColor="'#00000066'" />
 </template>
 
 <script lang="ts">
@@ -44,8 +48,11 @@ import { ref, onMounted } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
 import CheckoutMain from '@/components/ui/checkout/CheckoutMain.vue'
 import CheckoutSidebar from '@/components/ui/checkout/CheckoutSidebar.vue'
+import LoadingComp from '@/components/ui/LoadingComp.vue'
+import Toast from 'primevue/toast'
 
 import { useCartStore } from '@/stores/cart'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
   name: 'CheckoutPage',
@@ -53,6 +60,8 @@ export default {
   components: {
     CheckoutMain,
     CheckoutSidebar,
+    LoadingComp,
+    Toast,
   },
 
   setup() {
@@ -61,6 +70,7 @@ export default {
     const showInfor = ref(true)
 
     const cartStore = useCartStore()
+    const authStore = useAuthStore()
 
     onMounted(async () => {
       document.title = 'tsunsg - Thanh toán đơn hàng'
@@ -72,6 +82,7 @@ export default {
       isDesktop,
       showInfor,
       cartStore,
+      authStore,
     }
   },
 }

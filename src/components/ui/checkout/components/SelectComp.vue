@@ -1,18 +1,34 @@
 <template>
-  <div class="relative text-[#737373]">
-    <label :class="{ '!opacity-100': selectValue !== null }">{{ label }}</label>
-    <select v-model="selectValue" :class="{ '!pt-[1.6em] !pb-[0.38em]': selectValue !== null }">
-      <option disabled :value="null" selected>{{ placeholder }}</option>
-      <option v-for="(item, index) in options" :key="index" :value="item.code">
-        {{ item.name }}
-      </option>
-    </select>
+  <div class="text-[#737373]">
+    <Field
+      v-slot="{ field, errorMessage }"
+      v-model="internalValue"
+      :name="name"
+      :validateOnChange="true"
+      :validateOnBlur="false"
+    >
+      <div class="relative">
+        <label :class="{ '!opacity-100': internalValue !== null }">{{ label }}</label>
+        <select v-bind="field" :class="{ '!pt-[1.6em] !pb-[0.38em]': internalValue !== null }">
+          <option disabled value="">{{ placeholder }}</option>
+
+          <option v-for="(item, index) in options" :key="index" :value="item.code">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
+
+      <span v-if="errorMessage" class="text-sm text-[red] opacity-80 block !mt-2">{{
+        errorMessage
+      }}</span>
+    </Field>
   </div>
 </template>
 <script lang="ts">
 import { ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
+import { Field } from 'vee-validate'
 
 interface DataOptions {
   name: String
@@ -22,8 +38,12 @@ interface DataOptions {
 export default {
   name: 'SelectComp',
   mixins: [deviceMixin],
+  components: {
+    Field,
+  },
   props: {
     placeholder: String,
+    name: { type: String, required: true },
     label: String,
     options: {
       type: Array as PropType<DataOptions[]>,
@@ -34,28 +54,25 @@ export default {
       default: null,
     },
   },
-  emits: ['update:modelValue'],
 
   setup(props, { emit }) {
     const isMobile = ref(false)
-    const selectValue = ref(props.modelValue)
+    const internalValue = ref(props.modelValue)
 
-    // Đồng bộ giá trị nếu props.modelValue thay đổi từ ngoài
     watch(
       () => props.modelValue,
-      (val) => {
-        selectValue.value = val
+      (newVal) => {
+        internalValue.value = newVal
       },
     )
 
-    // Emit khi người dùng thay đổi select
-    watch(selectValue, (val) => {
+    watch(internalValue, (val) => {
       emit('update:modelValue', val)
     })
 
     return {
       isMobile,
-      selectValue,
+      internalValue,
     }
   },
 }
