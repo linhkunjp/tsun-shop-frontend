@@ -69,8 +69,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresCart) {
-    if (cartStore.cartQuantity == 0 && !cartStore.isLoading) {
+    if (cartStore.cartQuantity == 0 && !cartStore.isCartFetched) {
       // Lấy dữ liệu giỏ hàng mỗi khi truy cập vào router /checkout
+      cartStore.isCartFetched = true;
       cartStore.isLoading = true;
       await cartStore.getCart();
       cartStore.isLoading = false;

@@ -12,6 +12,7 @@ export const useCartStore = defineStore(
             cartQuantity: 0,
             isLoading: true,
             userId: localStorage.getItem('user_id') || localStorage.getItem('guest_id') || createGuestId(),
+            isCartFetched: false,
         }),
 
         actions: {
