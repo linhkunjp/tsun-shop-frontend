@@ -49,6 +49,7 @@ import CartAction from '@/components/ui/cart/CartAction.vue'
 import LoadingComp from '@/components/ui/LoadingComp.vue'
 
 import { useCartStore } from '@/stores/cart'
+import type { DataCart } from '@/types/cart'
 
 export default {
   name: 'CartPage',
@@ -65,7 +66,7 @@ export default {
     const isMobile = ref(false)
     const isDesktop = ref(false)
     const totalAmount = ref('')
-    const tempCart = ref([])
+    const tempCart = ref<DataCart[]>([])
 
     const cartStore = useCartStore()
     const data = computed(() => cartStore.dataCart)
@@ -75,14 +76,14 @@ export default {
     })
 
     // Nhận dữ liệu từ component con
-    function handleUpdateCart(val: any) {
+    function handleUpdateCart(val: DataCart[]) {
       recalcTotal(val)
       tempCart.value = val
     }
 
     // Tính toán lại tổng tiền
-    function recalcTotal(data: any) {
-      const totalNumber = data.reduce((sum: number, item: any) => {
+    function recalcTotal(data: DataCart[]) {
+      const totalNumber = data.reduce((sum, item) => {
         const num = parseInt(item.price.replace('₫', '').replace(/,/g, ''), 10)
         return sum + num * item.quantity
       }, 0)

@@ -23,7 +23,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
 import { Field } from 'vee-validate'
 
@@ -46,7 +46,7 @@ export default {
   setup(props, { emit }) {
     const isMobile = ref(false)
 
-    const updateValue = (value: any) => {
+    const updateValue = (value: string) => {
       emit('update:modelValue', value)
     }
 

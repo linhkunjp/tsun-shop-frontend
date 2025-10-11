@@ -5,6 +5,7 @@ export const useSidebarStore = defineStore(
     {
         state: () => ({
             isOpen: false,
+            isLoading: false,
             component: '',
         }),
         actions: {

@@ -29,8 +29,20 @@
     >
       <template v-for="(i, index) in data" :key="index">
         <swiper-slide class="border border-transparent"
-          ><img :src="i" class="aspect-3/4 block object-cover"
-        /></swiper-slide>
+          ><img
+            :src="i"
+            @load="handleLoadImg"
+            class="aspect-3/4 block object-cover cursor-pointer"
+          />
+          <div
+            v-if="isLoadImg"
+            class="absolute w-full h-full top-0 right-0 bg-[#00000066] rounded-lg flex items-center justify-center"
+          >
+            <div
+              class="loader w-[30px] h-[30px] rounded-full border-4 border-[#f3f3f3] !border-t-[#3498db]"
+            ></div>
+          </div>
+        </swiper-slide>
       </template>
 
       <div class="swiper-button-prev custom-nav">
@@ -71,6 +83,8 @@ export default {
 
   setup(props) {
     const thumbsSwiper = ref(null)
+    const isLoadImg = ref(true)
+    const loadedCount = ref(0)
 
     const data = computed(() => props.dataImages || [])
 
@@ -78,10 +92,20 @@ export default {
       thumbsSwiper.value = swiper
     }
 
+    function handleLoadImg() {
+      loadedCount.value++
+      // Gán lại isLoadImg chỉ khi tất cả ảnh đã load xong
+      if (loadedCount.value >= data.value.length) {
+        isLoadImg.value = false
+      }
+    }
+
     return {
       thumbsSwiper,
       setThumbsSwiper,
       data,
+      isLoadImg,
+      handleLoadImg,
       modules: [FreeMode, Navigation, Thumbs],
     }
   },

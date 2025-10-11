@@ -8,10 +8,23 @@
         <div v-if="item.pro_sale" class="absolute top-[10px] left-[10px] bg-white z-9">
           <p class="text-xs font-bold text-[#F94C43] px-2 py-1">{{ item.pro_sale }}</p>
         </div>
-        <div class="image">
+        <div class="image relative">
           <template v-for="(item, i) in duplicatedImages" :key="i">
-            <img :src="item" class="aspect-3/4 w-full block object-cover" loading="lazy" />
+            <img
+              :src="item"
+              @load="handleLoadImg"
+              class="aspect-3/4 w-full block object-cover"
+              loading="lazy"
+            />
           </template>
+          <div
+            v-if="isLoadImg"
+            class="absolute w-full h-full top-0 right-0 bg-[#00000066] rounded-lg flex items-center justify-center"
+          >
+            <div
+              class="loader w-[40px] h-[40px] rounded-full border-4 border-[#f3f3f3] !border-t-[#3498db]"
+            ></div>
+          </div>
         </div>
       </RouterLink>
       <div
@@ -45,7 +58,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
 import type { PropType } from 'vue'
 import type { ProductItem } from '@/types/product'
@@ -67,9 +80,19 @@ export default {
   setup(props) {
     const isMobile = ref(false)
     const isDesktop = ref(false)
+    const isLoadImg = ref(true)
+    const loadedCount = ref(0)
 
     const modalStore = useModalStore()
     const productStore = useProductStore()
+
+    function handleLoadImg() {
+      loadedCount.value++
+      // Gán lại isLoadImg chỉ khi tất cả ảnh đã load xong
+      if (loadedCount.value >= duplicatedImages.value.length) {
+        isLoadImg.value = false
+      }
+    }
 
     async function openModal(v: boolean) {
       await productStore.getProductDetail(props.item.slug)
@@ -86,11 +109,20 @@ export default {
       return imgs.length === 1 ? [imgs[0], imgs[0]] : imgs.slice(0, 2)
     })
 
+    watch(duplicatedImages, (newImgs, oldImgs) => {
+      if (JSON.stringify(newImgs) !== JSON.stringify(oldImgs)) {
+        isLoadImg.value = true
+        loadedCount.value = 0
+      }
+    })
+
     return {
       isMobile,
       isDesktop,
+      isLoadImg,
       openModal,
       getTitle,
+      handleLoadImg,
       duplicatedImages,
     }
   },

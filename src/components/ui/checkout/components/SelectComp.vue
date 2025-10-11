@@ -31,8 +31,8 @@ import deviceMixin from '@/utils/deviceMixin'
 import { Field } from 'vee-validate'
 
 interface DataOptions {
-  name: String
-  code: Number
+  name: string
+  code: number
 }
 
 export default {

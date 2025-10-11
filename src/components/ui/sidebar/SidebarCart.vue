@@ -6,56 +6,59 @@
         <div class="text-grey text-sm">Hiện chưa có sản phẩm</div>
       </template>
 
-      <template v-else>
-        <div
-          v-for="(item, index) in data"
-          :key="index"
-          :class="{
-            'border-b border-dotted border-[#bcbcbc] !pb-5': index !== data.length - 1,
-          }"
-          class="text-black !mb-5 flex items-center"
-        >
-          <!-- Image -->
-          <div>
-            <a class="cursor-pointer" target="_blank">
-              <img :src="item.image" class="w-[70px] min-w-[70px] block object-cover" />
-            </a>
-          </div>
-
-          <!-- Content -->
-          <div class="flex flex-col justify-start w-full !ml-5 !mr-[20px] relative">
-            <a class="cursor-pointer text-[13px] font-semibold uppercase leading-[1.4]">{{
-              item.title
-            }}</a>
-
-            <span class="text-xs text-[#080808] opacity-[.7] !mt-0.5">{{
-              item.variant?.size
-            }}</span>
-            <div class="flex items-center !mt-2.5">
-              <span class="block text-xs !text-[#080808] !px-3 !py-1 bg-[#ededed] !mr-3">{{
-                item.quantity
-              }}</span>
-              <span class="block text-sm !text-[#080808] font-medium opacity-[.7]">{{
-                item.price
-              }}</span>
+      <div :class="{ 'min-h-[10vh]': sidebarStore.isLoading }" class="relative" v-else>
+        <LoadingComp v-if="sidebarStore.isLoading" />
+        <template v-else>
+          <div
+            v-for="(item, index) in data"
+            :key="index"
+            :class="{
+              'border-b border-dotted border-[#bcbcbc] !pb-5': index !== data.length - 1,
+            }"
+            class="text-black !mb-5 flex items-center"
+          >
+            <!-- Image -->
+            <div>
+              <a class="cursor-pointer" target="_blank">
+                <img :src="item.image" class="w-[70px] min-w-[70px] block object-cover" />
+              </a>
             </div>
-            <!-- Close -->
-            <button
-              @click="cartStore.removeCartItem(item._id)"
-              class="cursor-pointer px-2 absolute top-[-3px] right-[-22px]"
-            >
-              <i class="fa-solid fa-xmark text-[15px] text-black font-medium"></i>
-            </button>
+
+            <!-- Content -->
+            <div class="flex flex-col justify-start w-full !ml-5 !mr-[20px] relative">
+              <a class="cursor-pointer text-[13px] font-semibold uppercase leading-[1.4]">{{
+                item.title
+              }}</a>
+
+              <span class="text-xs text-[#080808] opacity-[.7] !mt-0.5">{{
+                item.variant?.size
+              }}</span>
+              <div class="flex items-center !mt-2.5">
+                <span class="block text-xs !text-[#080808] !px-3 !py-1 bg-[#ededed] !mr-3">{{
+                  item.quantity
+                }}</span>
+                <span class="block text-sm !text-[#080808] font-medium opacity-[.7]">{{
+                  item.price
+                }}</span>
+              </div>
+              <!-- Close -->
+              <button
+                @click="cartStore.removeCartItem(item._id)"
+                class="cursor-pointer px-2 absolute top-[-3px] right-[-22px]"
+              >
+                <i class="fa-solid fa-xmark text-[15px] text-black font-medium"></i>
+              </button>
+            </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
     </div>
 
     <!-- Line -->
     <div class="!my-5 border-t-2 border-black"></div>
     <div class="text-black !text-sm !uppercase flex items-center justify-between">
       <span>tổng tiền :</span>
-      <span>{{ cartStore.totalAmount }}₫</span>
+      <span v-show="!sidebarStore.isLoading">{{ cartStore.totalAmount }}₫</span>
     </div>
 
     <!-- Action btn -->
@@ -82,9 +85,10 @@
 </template>
 
 <script lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import deviceMixin from '@/utils/deviceMixin'
 import ButtonComp from '@/components/ui/ButtonComp.vue'
+import LoadingComp from '@/components/ui/LoadingComp.vue'
 
 import { useSidebarStore } from '@/stores/sidebar'
 import { useCartStore } from '@/stores/cart'
@@ -96,6 +100,7 @@ export default {
   mixins: [deviceMixin],
   components: {
     ButtonComp,
+    LoadingComp,
   },
 
   setup() {
@@ -116,6 +121,12 @@ export default {
     function goToCheckout() {
       router.push('/checkout')
     }
+
+    watch(data, (newVal) => {
+      if (newVal) {
+        sidebarStore.isLoading = false
+      }
+    })
 
     return {
       isMobile,

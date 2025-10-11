@@ -13,10 +13,10 @@
     <div class="!mt-3">
       <h2 class="text-[#333333] text-[18px] font-medium">Thông tin giao hàng</h2>
       <p v-if="!authStore.token" class="text-[#737373] text-sm font-medium !mt-4">
-        Bạn đã có tài khoản? <a class="text-[#338dbc]">Đăng nhập</a>
+        Bạn đã có tài khoản? <RouterLink to="/auth" class="text-[#338dbc]">Đăng nhập</RouterLink>
       </p>
 
-      <Form @submit="orderComplete" :validation-schema="OrderSchema">
+      <VeeValidateForm @submit="orderComplete" :validation-schema="OrderSchema">
         <!-- Form -->
         <div class="!mt-3">
           <InputComp v-model="authStore.username" :placeholder="'Họ và tên'" name="fullName" />
@@ -86,7 +86,7 @@
             Hoàn tất đơn hàng
           </button>
         </div>
-      </Form>
+      </VeeValidateForm>
     </div>
   </div>
 </template>
@@ -98,7 +98,7 @@ import InputComp from './components/InputComp.vue'
 import SelectComp from './components/SelectComp.vue'
 import MethodLayout from '@/components/ui/checkout/components/MethodLayout.vue'
 
-import { Form } from 'vee-validate'
+import { Form as VeeValidateForm } from 'vee-validate'
 import { OrderSchema } from '@/schemas/OrderSchema'
 import { getNameByCode } from '@/utils/methods'
 import { useSidebarStore } from '@/stores/sidebar'
@@ -122,7 +122,7 @@ export default {
     InputComp,
     MethodLayout,
     SelectComp,
-    Form,
+    VeeValidateForm,
   },
 
   setup() {
@@ -156,7 +156,7 @@ export default {
       if (isDisabled.value) return
       const formData = {
         userId: cartStore.userId,
-        items: cartStore.dataCart.map(({ _id, ...item }) => item),
+        items: cartStore.dataCart.map((item) => item),
         totalAmount: cartStore.totalAmount,
         phoneNumber: phoneNumber.value,
         email: authStore.email,

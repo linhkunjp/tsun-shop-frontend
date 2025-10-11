@@ -47,7 +47,7 @@ export default {
     },
   },
 
-  setup(props, { emit }) {
+  setup(props) {
     const isMobile = ref(false)
     const isDesktop = ref(false)
 

@@ -16,7 +16,7 @@
         </h1>
       </div>
 
-      <div :class="{ 'min-h-[600px]': collectionStore.isLoading }" class="relative">
+      <div :class="{ 'min-h-[calc(50vh)]': collectionStore.isLoading }" class="relative">
         <LoadingComp v-if="collectionStore.isLoading" />
         <!-- Sort -->
         <template v-if="collectionStore.dataProducts?.length > 0">
@@ -47,17 +47,18 @@
                 'grid-cols-4': isDesktop,
                 'grid-cols-3': isTablet,
                 'grid-cols-2': isMobile,
+                hidden: collectionStore.isLoading,
               }"
             />
           </div>
         </template>
-        <template v-if="collectionStore.dataProducts?.length == 0">
-          <NotFound
-            :title="'Không tìm thấy sản phẩm'"
-            :content="'Xin lỗi, hiện không có sản phẩm ở trang này'"
-            :minHeight="'h-[50vh]'"
-          />
-        </template>
+
+        <NotFound
+          v-else
+          :title="'Không tìm thấy sản phẩm'"
+          :content="'Xin lỗi, hiện không có sản phẩm ở trang này'"
+          :minHeight="'h-[50vh]'"
+        />
       </div>
     </div>
   </div>
@@ -107,11 +108,11 @@ export default {
     ]
 
     // Lấy ra item trùng với slug để hiển thị title
-    const findCategoryBySlug = (slugValue: any) => {
+    const findCategoryBySlug = (slugValue: string) => {
       for (const category of json) {
         if (category.slug === slugValue) return category
         if (category.children && Array.isArray(category.children)) {
-          const child = category.children.find((c: any) => c.slug === slugValue)
+          const child = category.children.find((cate) => cate.slug === slugValue)
           if (child) return child
         }
       }

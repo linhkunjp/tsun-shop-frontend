@@ -64,7 +64,7 @@ export default {
     const toast = useToast()
     const router = useRouter()
 
-    const originalCart = ref<any[]>([])
+    const originalCart = ref<DataCart[]>([])
     const hasInitialized = ref(false)
 
     // Theo dõi props.dataCart, lưu lại vào originalCart 1 lần khi có dữ liệu

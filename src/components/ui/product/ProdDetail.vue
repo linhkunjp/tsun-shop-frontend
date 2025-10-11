@@ -127,6 +127,7 @@ export default {
       }
 
       sidebarStore.openSidebar(true, 'cart')
+      sidebarStore.isLoading = true
       cartStore.addToCart(dataCart)
     }
 
