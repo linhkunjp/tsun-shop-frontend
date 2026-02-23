@@ -11,7 +11,7 @@
       :modules="modules"
     >
       <template v-for="(i, index) in data" :key="index">
-        <swiper-slide><img :src="i" class="aspect-3/4 block object-cover" /></swiper-slide>
+        <swiper-slide><img :src="i" class="block object-cover aspect-3/4" /></swiper-slide>
       </template>
     </swiper>
     <swiper
@@ -32,7 +32,7 @@
           ><img
             :src="i"
             @load="handleLoadImg"
-            class="aspect-3/4 block object-cover cursor-pointer"
+            class="block object-cover cursor-pointer aspect-3/4"
           />
           <div
             v-if="isLoadImg"

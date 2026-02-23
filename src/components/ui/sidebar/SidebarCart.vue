@@ -119,6 +119,7 @@ export default {
     }
 
     function goToCheckout() {
+      if (data.value.length == 0) return
       router.push('/checkout')
     }
 
